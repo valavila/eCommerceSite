@@ -46,7 +46,7 @@ namespace eCommerceSite.Controllers
                 _context.Products.Add(p); // Creates insert querey
                 _context.SaveChanges(); // executes query
 
-                TempData["Message"] = $"{p.ProductId} {p.Title} was added successfully"; // populate success message
+                TempData["Message"] = $"{p.Title} was added successfully"; // populate success message
 
                 //Rederict back to catalog page
                 return RedirectToAction("Index");
