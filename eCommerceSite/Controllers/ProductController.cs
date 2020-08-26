@@ -23,28 +23,22 @@ namespace eCommerceSite.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Index(int? id)
         {
+            // Getting the page number
             int pageNum = id ?? 1;
-
             const int PageSize = 3;
-
             ViewData["CurrentPage"] = pageNum;
 
-            int numProducts = await (from p in _context.Products
-                                     select p).CountAsync();
 
+            int numProducts = await ProductDb.GetTotalProductsAsync(_context);
             int totalPages = (int)(Math.Ceiling((double)numProducts / PageSize));
-
             ViewData["MaxPage"] = totalPages;
 
-            //Get sll producrs from databse
-            //List<Product> products = _context.Products.ToList();
-            List < Product > products = await (from p in _context.Products
-                                               orderby p.Title ascending
-                                               select p)
-                                            .Skip(PageSize * (pageNum - 1)) //Skip must be before take
-                                            .Take(PageSize)
-                                            .ToListAsync();
 
+            //Get sll producrs from databse
+            
+            //List<Product> products = _context.Products.ToList();
+            List<Product> products = await ProductDb.GetProductsAsync(_context, PageSize, pageNum);
+            
             //Send list of products to view to be diplayed
             return View(products);
         }
@@ -60,9 +54,7 @@ namespace eCommerceSite.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Add to DB
-                _context.Products.Add(p); // Creates insert querey
-                await _context.SaveChangesAsync(); // executes query
+                await ProductDb.AddProductAsync(_context, p);
 
                 TempData["Message"] = $"{p.Title} was added successfully"; // populate success message
 
@@ -77,15 +69,7 @@ namespace eCommerceSite.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             // Get product with corresponding id
-            Product p =
-                await (from prod in _context.Products
-                       where prod.ProductId == id
-                       select prod).SingleAsync();
-
-            //Product p2 = await _context
-            //                .Products
-            //                .Where(prod => prod.ProductId == id)
-            //                .SingleAsync();
+            Product p =  await ProductDb.GetSingleProductAsync(_context, id);
 
             // pass product to view
             return View(p);
@@ -108,9 +92,7 @@ namespace eCommerceSite.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            Product p = await (from prod in _context.Products
-                               where prod.ProductId == id
-                               select prod).SingleAsync();
+            Product p = await ProductDb.GetSingleProductAsync(_context, id);
             return View(p);
         }
 
@@ -118,9 +100,7 @@ namespace eCommerceSite.Controllers
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            Product p = await (from prod in _context.Products
-                               where prod.ProductId == id
-                               select prod).SingleAsync();
+            Product p = await ProductDb.GetSingleProductAsync(_context, id);
 
             _context.Entry(p).State = EntityState.Deleted;
             await _context.SaveChangesAsync();
