@@ -34,6 +34,9 @@ namespace eCommerceSite.Models
         public string  ConfirmEmail { get; set; }
 
         [Required]
+        [StringLength(20)]
+        public string UserName { get; set; }
+        [Required]
         [DataType(DataType.Password)]
         [StringLength(120, MinimumLength = 6, ErrorMessage = "Password must be between 6 and 120 characters ")]
         public string Password { get; set; }
