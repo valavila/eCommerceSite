@@ -6,20 +6,39 @@
 <h1>Add Product</h1>
 
 <form method="post">
-    <label asp-for="Title"></label>
-    <input asp-for="Title" />
-    <span asp-validation-for="Title"></span>
-    <br />
+    <div class="form-group row">
+        <label asp-for="Title" class="col-lg-1 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Title" class="form-control form-control-lg" placeholder="Title" />
+            <span asp-validation-for="Title"></span>
+            <small  class="form-text text-muted">
+                Name of your product
+            </small>
+        </div>
+    </div>
 
-    <label asp-for="Price"></label>
-    <input asp-for="Price" />
-    <span asp-validation-for="Price"></span>
-    <br />
+    <div class="form-group row">
+        <label asp-for="Price" class="col-lg-1 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Price" class="form-control form-control-lg" placeholder="Price" />
+            <span asp-validation-for="Price"></span>
+            <small class="form-text text-muted">
+                Price with no "$"
+            </small>
+        </div>
+    </div>
 
-    <label asp-for="Category"></label>
-    <input asp-for="Category" />
-    <span asp-validation-for="Category"></span>
-    <br />
+    <div class="form-group row">
+        <label asp-for="Category" class="col-lg-1 col-form-label"></label>
+        <div class="col-sm-10">
+            <input asp-for="Category" class="form-control form-control-lg" placeholder="Category" />
+            <span asp-validation-for="Category"></span>
+            <small class="form-text text-muted">
+                What type of product is the item
+            </small>
+        </div>
+    </div>
 
-    <input type="submit" />
+    <input class="btn btn-primary btn-lg" type="submit" />
 </form>
+
