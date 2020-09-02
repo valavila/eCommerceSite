@@ -26,11 +26,37 @@ namespace eCommerceSite.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel reg)
         {
             if (ModelState.IsValid)
             {
-                //Map data to user account instance
+                // Check if username/email is in use
+                bool isEmailTaken = await (from account in _context.UserAccounts
+                                           where account.Email == reg.Email
+                                           select account).AnyAsync();
+
+                // if so, add custom error and send back to view
+                if (isEmailTaken)
+                {
+                    ModelState.AddModelError(nameof(RegisterViewModel.Email), "That email is already in use");
+                }
+
+                bool isUsernameTaken = await (from account in _context.UserAccounts
+                                              where account.UserName == reg.UserName
+                                              select account).AnyAsync();
+                if (isUsernameTaken)
+                {
+                    ModelState.AddModelError(nameof(RegisterViewModel.UserName), "That username is taken");
+                }
+
+                if (isEmailTaken || isUsernameTaken)
+                {
+                    return View(reg);
+                }
+
+
+                // Map data to user account instance
                 UserAccount acc = new UserAccount()
                 {
                     DateOfBirth = reg.DateOfBirth,
@@ -38,17 +64,15 @@ namespace eCommerceSite.Controllers
                     Password = reg.Password,
                     UserName = reg.UserName
                 };
-
-                //Add to databse
+                // add to database
                 _context.UserAccounts.Add(acc);
                 await _context.SaveChangesAsync();
-                //Rederict to homepage
+                // redirect to home page
                 return RedirectToAction("Index", "Home");
             }
-
             return View(reg);
         }
-        
+
         public IActionResult Login()
         {
             if (HttpContext.Session.GetInt32("UserId").HasValue)
