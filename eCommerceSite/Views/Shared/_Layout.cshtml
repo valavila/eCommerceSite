@@ -54,7 +54,12 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-light">Welcome @username</a> 
+                                <a class="nav-link text-light">Welcome @username</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-action="Logout" asp-controller="User">
+                                    Logout
+                                </a>
                             </li>
                         }
 
